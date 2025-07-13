@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edit Product</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --color1: #4361ee;
+      --color2: #3a0ca3;
+      --color3: #4895ef;
+      --color4: #4cc9f0;
+      --color5: #7209b7;
+      --color6: #f72585;
+      --light: #f8f9fa;
+      --text: #212529;
+      --gray: #6c757d;
+      --shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+      --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    /* Edit Card */
+    .edit-card {
+      background: white;
+      border-radius: 15px;
+      padding: 30px;
+      box-shadow: var(--shadow);
+      margin-top: 20px;
+      border-top: 5px solid var(--color3);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .edit-card:before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 5px;
+      background: linear-gradient(90deg, var(--color3), var(--color4));
+    }
+
+    .page-title {
+      display: flex;
+      align-items: center;
+      margin-bottom: 25px;
+      color: var(--color2);
+    }
+
+    .page-title i {
+      margin-right: 15px;
+      font-size: 1.8rem;
+      color: var(--color3);
+    }
+
+    /* Form Styles */
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: var(--color2);
+      display: flex;
+      align-items: center;
+    }
+
+    label i {
+      margin-right: 10px;
+      color: var(--color1);
+      width: 20px;
+      text-align: center;
+    }
+
+    input[type="text"],
+    input[type="number"] {
+      width: 100%;
+      padding: 12px 15px;
+      border: 2px solid #e9ecef;
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: var(--transition);
+    }
+
+    input[type="text"]:focus,
+    input[type="number"]:focus {
+      border-color: var(--color3);
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(72, 149, 239, 0.2);
+    }
+
+    .error-message {
+      color: var(--color6);
+      font-size: 0.8rem;
+      margin-top: 5px;
+      display: none;
+    }
+
+    /* Buttons */
+    .action-buttons {
+      display: flex;
+      gap: 15px;
+      margin-top: 30px;
+    }
+
+    .btn {
+      padding: 12px 25px;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: none;
+      font-size: 1rem;
+    }
+
+    .btn i {
+      margin-right: 8px;
+    }
+
+    .btn-submit {
+      background: var(--color3);
+      color: white;
+    }
+
+    .btn-submit:hover {
+      background: #3a7bd5;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn-submit:disabled {
+      background: #cccccc;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .btn-cancel {
+      background: var(--gray);
+      color: white;
+    }
+
+    .btn-cancel:hover {
+      background: #5a6268;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Status Message */
+    .status {
+      margin-top: 20px;
+      padding: 15px;
+      border-radius: 8px;
+      font-weight: 600;
+      display: none;
+    }
+
+    .success {
+      background: #d4edda;
+      color: #155724;
+      display: block;
+    }
+
+    .error {
+      background: #f8d7da;
+      color: #721c24;
+      display: block;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .container {
+        padding: 15px;
+      }
+
+      .edit-card {
+        padding: 20px;
+      }
+
+      .action-buttons {
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .btn {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="edit-card">
+      <h1 class="page-title">
+        <i class="fas fa-edit"></i> Edit Product
+      </h1>
+
+      <form id="editForm">
+        <div class="form-group">
+          <label for="productName"><i class="fas fa-box"></i> Product Name</label>
+          <input type="text" id="productName" required>
+          <div class="error-message" id="nameError">A product with this name already exists</div>
+        </div>
+
+        <div class="form-group">
+          <label for="companyName"><i class="fas fa-building"></i> Company Name</label>
+          <input type="text" id="companyName" required>
+        </div>
+
+        <div class="form-group">
+          <label for="cost"><i class="fas fa-tag"></i> Cost</label>
+          <input type="number" id="cost" step="0.01" required>
+        </div>
+
+        <div class="form-group">
+          <label for="cash"><i class="fas fa-money-bill-wave"></i> Cash</label>
+          <input type="number" id="cash" step="0.01" required>
+        </div>
+
+        <div class="form-group">
+          <label for="credit"><i class="fas fa-credit-card"></i> Credit</label>
+          <input type="number" id="credit" step="0.01" required>
+        </div>
+
+        <div class="action-buttons">
+          <button type="submit" class="btn btn-submit" id="submitBtn">
+            <i class="fas fa-save"></i> Update Product
+          </button>
+          <button type="button" class="btn btn-cancel" onclick="window.history.back()">
+            <i class="fas fa-times"></i> Cancel
+          </button>
+        </div>
+      </form>
+
+      <div class="status" id="status"></div>
+    </div>
+  </div>
+
+  <script>
+    const API = 'https://script.google.com/macros/s/AKfycbxpMMUGmDN8_5ekS7NaipRO4Qx0wIT6Ed8pBGxeBQRy7k2p81OFzmht3XVcJ8WKZXn1kg/exec';
+    const params = new URLSearchParams(window.location.search);
+    const productId = params.get('id');
+    let productData = null;
+    let allProducts = [];
+
+    // Check if product name already exists
+    function isProductNameUnique(name, currentId) {
+      return !allProducts.some(
+        product => product["Product Name"] === name && product.SR_NO !== currentId
+      );
+    }
+
+    // Validate form before submission
+    function validateForm() {
+      const productName = document.getElementById('productName').value.trim();
+      const nameError = document.getElementById('nameError');
+      const submitBtn = document.getElementById('submitBtn');
+      
+      if (!isProductNameUnique(productName, productId)) {
+        nameError.style.display = 'block';
+        submitBtn.disabled = true;
+        return false;
+      } else {
+        nameError.style.display = 'none';
+        submitBtn.disabled = false;
+        return true;
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      allProducts = JSON.parse(localStorage.getItem('products') || '[]');
+      const found = allProducts.find(p => p.SR_NO == productId);
+      
+      if (!found) {
+        document.getElementById('status').textContent = 'Product not found';
+        document.getElementById('status').className = 'status error';
+        document.getElementById('editForm').style.opacity = '0.5';
+        document.getElementById('editForm').style.pointerEvents = 'none';
+        return;
+      }
+
+      productData = found;
+      document.getElementById('productName').value = productData["Product Name"] || '';
+      document.getElementById('companyName').value = productData["Company_Name"] || '';
+      document.getElementById('cost').value = productData["Cost"] || '';
+      document.getElementById('cash').value = productData["Cash"] || '';
+      document.getElementById('credit').value = productData["Credit"] || '';
+
+      // Add validation on product name change
+      document.getElementById('productName').addEventListener('input', validateForm);
+    });
+
+    document.getElementById('editForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+
+      // Final validation check
+      if (!validateForm()) {
+        return;
+      }
+
+      const submitBtn = document.getElementById('submitBtn');
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Updating...';
+
+      const updatedProduct = {
+        SR_NO: productId,
+        "Product Name": document.getElementById('productName').value.trim(),
+        "Company_Name": document.getElementById('companyName').value.trim(),
+        "Cost": document.getElementById('cost').value.trim(),
+        "Cash": document.getElementById('cash').value.trim(),
+        "Credit": document.getElementById('credit').value.trim()
+      };
+
+      const payload = {
+        update: [updatedProduct],
+        lastSync: localStorage.getItem('lastSync') || ''
+      };
+
+      try {
+        const res = await fetch(API, {
+          method: 'POST',
+          body: JSON.stringify(payload)
+        });
+        const result = await res.json();
+
+        if (result.success !== false) {
+          const local = JSON.parse(localStorage.getItem('products') || '[]');
+          const updated = local.map(p => p.SR_NO == productId ? updatedProduct : p);
+          localStorage.setItem('products', JSON.stringify(updated));
+          localStorage.setItem('lastSync', result.lastModified || new Date().toISOString());
+          document.getElementById('status').textContent = 'Product updated successfully';
+          document.getElementById('status').className = 'status success';
+          
+          // Redirect after 1 second
+          setTimeout(() => {
+            window.location.href = 'product.html?id=' + productId;
+          }, 1000);
+        } else {
+          document.getElementById('status').textContent = 'Failed to update product';
+          document.getElementById('status').className = 'status error';
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = '<i class="fas fa-save"></i> Update Product';
+        }
+      } catch (err) {
+        console.error(err);
+        document.getElementById('status').textContent = 'Error: ' + err.message;
+        document.getElementById('status').className = 'status error';
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="fas fa-save"></i> Update Product';
+      }
+    });
+  </script>
+</body>
+</html>
